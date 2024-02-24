@@ -54,9 +54,4 @@ def get_user_name():
 
     return str(user_names[0])
 
-userName = get_user_name()
-openPath = ("C:\\Users\\default\\Downloads")   
-
-newpath = openPath.replace('default',get_user_name())
-
 

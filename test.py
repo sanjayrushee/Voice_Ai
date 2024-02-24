@@ -235,23 +235,73 @@ if __name__ == "__main__":
     bot.whatsapp("send a message to Rock Ravi")
 
 
+import wikipedia
+secondary_cmd = input()
+try:
+    if ('wikipedia' in secondary_cmd):
+        result = secondary_cmd.replace("wikipedia",' ')
+    elif('what is meant by' in secondary_cmd):
+        result = secondary_cmd.replace('what is meant by',' ')
+    print("Give me a second")
+    info = wikipedia.summary(result,3)
+    print("According to wikipedia" + info)
+except:
+    pass
 
+    
+ elif "music" in secondary_cmd or "play some music " in secondary_cmd.lower():
+                    song = os.listdir("E:\\Music\\Songs")  #replace your user path
+                    os.startfile(os.path.join("E:\\Music\\Songs", song[5])) #replace your user path
+                    break
+
+    
 '''
+from gtts import gTTS
+import pygame
+from io import BytesIO
+from googletrans import Translator
 
-from googlesearch import search
+select_language = {
+    "english": "en",
+    "french": "fr",
+    "spanish": "es",
+    "german": "de",
+    "italian": "it",
+    "portuguese": "pt",
+    "russian": "ru",
+    "chinese (Simplified)": "zh-CN",
+    "japanese": "ja",
+    "korean": "ko",
+    "arabic": "ar",
+    "hindi": "hi",
+    "bengali": "bn",
+    "tamil": "ta",
+    "telugu": "te",
+    "urdu": "ur"
+}
 
-def google_search(query, num_results=5):
-    try:
-        # Perform the Google search
-        search_results = search(query, num_results=num_results)
 
-        # Print the search results
-        for i, result in enumerate(search_results, start=1):
-            print(f"Result {i}: {result}")
+def translate_voice(inputText,get_target_language):
+    translator = Translator()
+    translation = translator.translate(inputText, dest=get_target_language)
+    pygame.mixer.init()
+    tts = gTTS(text=translation.text, lang=get_target_language, slow=False)
+    speech_bytes = BytesIO()
+    tts.write_to_fp(speech_bytes)
+    speech_bytes.seek(0)
+    pygame.mixer.music.load(speech_bytes)
+    pygame.mixer.music.play()
+    while pygame.mixer.music.get_busy():
+        continue
+    pygame.mixer.quit()
+    return translation.text
 
-    except Exception as e:
-        print("An error occurred:", e)
+text_to_translate = input("Enter the text to translate: ")
+remove_the_translate_words = text_to_translate.replace("translate this",' ') or text_to_translate.replace("translate",' ')
+target_language = input("Enter the target language (e.g., 'fr' for French): ").lower()
+get_target_language = select_language[target_language]
 
-if __name__ == "__main__":
-    search_query = input("Enter the query you want to search on Google: ")
-    google_search(search_query)
+print(translate_voice(remove_the_translate_words,get_target_language))
+
+
+
