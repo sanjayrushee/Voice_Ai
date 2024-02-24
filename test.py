@@ -255,7 +255,7 @@ except:
                     break
 
     
-'''
+
 from gtts import gTTS
 import pygame
 from io import BytesIO
@@ -303,5 +303,29 @@ get_target_language = select_language[target_language]
 
 print(translate_voice(remove_the_translate_words,get_target_language))
 
+import requests
+from bs4 import BeautifulSoup
 
+
+
+import requests
+
+def get_current_temperature(city):
+    try:
+        api_key = 'b55d9a0a22028f7880c8e3c052e0c3c6'  # Replace 'YOUR_API_KEY' with your OpenWeatherMap API key
+        url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
+        response = requests.get(url)
+        data = response.json()
+        temperature = data["main"]["temp"]
+        return temperature
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+if __name__ == "__main__":
+    city = input("Enter city name: ")
+    temperature = get_current_temperature(city)
+    print(f"Current temperature in {city}: {temperature}°C")
+
+
+'''
 

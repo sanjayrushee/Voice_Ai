@@ -1,5 +1,7 @@
 import sys
-import time
+import time as time
+import requests
+from bs4 import BeautifulSoup
 import pywhatkit
 import speech_recognition as sr
 import pyttsx3
@@ -26,7 +28,7 @@ voices = engine.getProperty('voices')
 engine.setProperty('voice',voices[0].id)
 list_of_apps_opend = []
 r = sr.Recognizer()
-userName = get_user_name()
+userName = get_user_name() 
 
 
 
@@ -40,8 +42,7 @@ def listening_cmd():
         r = sr.Recognizer()
         with sr.Microphone() as source:
             print("Listening...")
-            r.pause_threshold = 1
-            audio = r.listen(source, timeout=2, phrase_time_limit=5)
+            audio = r.listen(source, timeout=2,phrase_time_limit=8)
 
         try:
             print("Recognizing...")
@@ -56,7 +57,7 @@ def listening_cmd():
         return cmd
     else:
         print("Microphone is not connected")
-        cmd = input("Enter cmdand: ")
+        cmd = input("Enter the Command: ")
         return cmd
 
 
@@ -76,37 +77,56 @@ def wish():
         print("Good Night!")
 
 def translate_voice(inputText,which_lang):
-    select_language = {
-    "english": "en",
-    "french": "fr",
-    "spanish": "es",
-    "german": "de",
-    "italian": "it",
-    "portuguese": "pt",
-    "russian": "ru",
-    "chinese (Simplified)": "zh-CN",
-    "japanese": "ja",
-    "korean": "ko",
-    "arabic": "ar",
-    "hindi": "hi",
-    "bengali": "bn",
-    "tamil": "ta",
-    "telugu": "te",
-    "urdu": "ur" }
-    get_target_language = select_language[which_lang]
-    translator = Translator()
-    translation = translator.translate(inputText, dest=get_target_language)
-    pygame.mixer.init()
-    tts = gTTS(text=translation.text, lang=get_target_language, slow=False)
-    speech_bytes = BytesIO()
-    tts.write_to_fp(speech_bytes)
-    speech_bytes.seek(0)
-    pygame.mixer.music.load(speech_bytes)
-    pygame.mixer.music.play()
-    while pygame.mixer.music.get_busy():
-        continue
-    pygame.mixer.quit()
-    return translation.text
+    try:
+        select_language = {
+        "english": "en",
+        "french": "fr",
+        "spanish": "es",
+        "german": "de",
+        "italian": "it",
+        "portuguese": "pt",
+        "russian": "ru",
+        "chinese (Simplified)": "zh-CN",
+        "japanese": "ja",
+        "korean": "ko",
+        "arabic": "ar",
+        "hindi": "hi",
+        "bengali": "bn",
+        "tamil": "ta",
+        "telugu": "te",
+        "urdu": "ur" }
+
+        get_target_language = select_language[which_lang]
+        translator = Translator()
+        translation = translator.translate(inputText, dest=get_target_language)
+        pygame.init()
+        pygame.mixer.init()
+        tts = gTTS(text=translation.text, lang=get_target_language, slow=False)
+        speech_bytes = BytesIO()
+        tts.write_to_fp(speech_bytes)
+        speech_bytes.seek(0)
+        pygame.mixer.music.load(speech_bytes)
+        pygame.mixer.music.play()
+        while pygame.mixer.music.get_busy():
+            continue
+        pygame.mixer.quit()
+        print(translation.text)
+        return translation.text
+    except:
+        print("Some Error")
+
+def get_current_temperature(city):
+    try:
+        api_key = 'b55d9a0a22028f7880c8e3c052e0c3c6' 
+        url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
+        response = requests.get(url)
+        data = response.json()
+        temperature = data["main"]["temp"]
+        print(temperature)
+        return temperature
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return f"Error: {str(e)}"
 
 
 def thecmdrushe():
@@ -128,6 +148,7 @@ def thecmdrushe():
                     print(music)
                     talk("playing")
                     pywhatkit.playonyt(music)
+                    break
                 
                 #getting worst jokes     
                 elif "some joke" in secondary_cmd:
@@ -137,35 +158,39 @@ def thecmdrushe():
                 
                 #Open the default folders in windows
                 elif "open download" in secondary_cmd or "open download folder" in secondary_cmd:
-                    openPath = ("C:\\Users\\default\\Downloads")   
+                    openPath = ("C:\\Users\\default\\Downloads")  
                     newpath = openPath.replace('default',userName)
                     os.startfile(newpath)
                 elif "video folder" in secondary_cmd or "video path"  in secondary_cmd:
-                    os.startfile("C:\\Users\\default\\Video")
+                    openPath = ("C:\\Users\\default\\Videos")
                     newpath = openPath.replace('default',userName)
                     os.startfile(newpath) 
                 elif "document folder" in secondary_cmd or "document path"  in secondary_cmd:
-                    os.startfile("C:\\Users\\default\\Documents")
-                    newpath = openPath.replace('default',userName)
-                    os.startfile(newpath) 
+                    try:
+                        openPath = ("C:\\Users\\default\\Documents")
+                        newpath = openPath.replace('default',userName)
+                        os.startfile(newpath) 
+                    except:
+                        openPath = ("C:\\Users\\default\\OneDrive\\Documents")
+                        newpath = openPath.replace('default',userName)
+                        os.startfile(newpath) 
                 elif "music folder" in secondary_cmd or "music path"  in secondary_cmd:
-                    os.startfile("C:\\Users\\default\\Music")
+                    openPath = ("C:\\Users\\default\\Music")
                     newpath = openPath.replace('default',userName)
                     os.startfile(newpath) 
-                elif "picture folder" in secondary_cmd or "picture path"  in secondary_cmd:
-                    os.startfile("C:\\Users\\default\\Pictures")
-                    newpath = openPath.replace('default',userName)
-                    os.startfile(newpath) 
+              
                 
                 #translate
                 elif "translate" in secondary_cmd :
                     remove_the_translate_words = secondary_cmd.replace("translate",' ')
+                    print("Which Language you want change")
+                    talk("Which Language you want change")
                     which_lang = listening_cmd().lower()
                     translate_voice(remove_the_translate_words,which_lang)
 
                 # close app
                 elif "close " in secondary_cmd.lower():
-                    talk("ok")
+                    talk("ok, closeing ")
                     place = secondary_cmd.replace('close','')
                     place = place.lstrip()
                     print(place)
@@ -219,15 +244,12 @@ def thecmdrushe():
                 elif "lock my pc" in secondary_cmd.lower() or "lock my computer" in secondary_cmd.lower():
                     talk("ok")
                     ctypes.windll.user32.LockWorkStation()
-
-                #createing notepad
-                elif "notepad" in secondary_cmd.lower() or "Notepad " in secondary_cmd:
-                    notepad = "notepad.exe"
-                    filename = "file.txt"
-                    sp.Popen([notepad, filename])
+                    break
                     
-                elif "what is temperature" in secondary_cmd.lower():
-                    pass
+                elif "what is current temperature in" in secondary_cmd.lower():
+                    city = secondary_cmd.replace("what is current temperature in", ' ').lower()
+                    talk(f"Current Temperature in {city} {get_current_temperature(city)}")
+
 
              
 
