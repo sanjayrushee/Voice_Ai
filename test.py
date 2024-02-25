@@ -373,7 +373,6 @@ remove_the_translate_words = secondary_cmd.replace("translate",' ')
 which_lang = input("Which Language you want change :")
 translate_voice(remove_the_translate_words,which_lang)
 
-'''
 import wikipedia
 
 def search_wikipedia(question_type, topic):
@@ -393,4 +392,6 @@ if __name__ == "__main__":
     question_type = input("Enter your question type (what, who, how): ").lower()
     topic = input("Enter the topic: ")
     search_wikipedia(question_type, topic)
+
+'''
 
