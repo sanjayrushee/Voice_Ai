@@ -128,6 +128,23 @@ def get_current_temperature(city):
         print(f"Error: {str(e)}")
         return f"Error: {str(e)}"
 
+def search_wikipedia(question_type, topic):
+    wikipedia.set_lang("en") 
+    try:
+        if question_type == 'what':
+            result = wikipedia.summary(topic, sentences=2)
+        elif question_type == 'who':
+            result = wikipedia.summary(topic, sentences=1)
+        elif question_type == 'how':
+            search_query = f"How {topic}"
+            result = wikipedia.summary(search_query, sentences=2)
+        print(result)
+        return result
+    except wikipedia.exceptions.DisambiguationError as e:
+        result = f"Please provide more specific information. Ambiguous term: {e}"
+        print(result)
+        return result
+
 
 def thecmdrushe():
     while True:
@@ -179,7 +196,18 @@ def thecmdrushe():
                     newpath = openPath.replace('default',userName)
                     os.startfile(newpath) 
               
-                
+                #wikipeida 
+                elif "who" in secondary_cmd or "what" in secondary_cmd or "how" in secondary_cmd:
+                    set_questiontype = ''
+                    if "who" in secondary_cmd:
+                        set_questiontype = 'who'
+                    elif "what" in secondary_cmd:
+                        set_questiontype = 'what'
+                    elif "how" in secondary_cmd:
+                        set_questiontype = "how"
+                    topic = secondary_cmd
+                    talk(search_wikipedia(set_questiontype, topic))
+              
                 #translate
                 elif "translate" in secondary_cmd :
                     remove_the_translate_words = secondary_cmd.replace("translate",' ')

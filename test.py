@@ -327,5 +327,70 @@ if __name__ == "__main__":
     print(f"Current temperature in {city}: {temperature}°C")
 
 
+import pygame
+from googletrans import Translator
+from gtts import gTTS
+from io import BytesIO
+
+def translate_voice(inputText,which_lang):
+    select_language = {
+    "english": "en",
+    "french": "fr",
+    "spanish": "es",
+    "german": "de",
+    "italian": "it",
+    "portuguese": "pt",
+    "russian": "ru",
+    "chinese (Simplified)": "zh-CN",
+    "japanese": "ja",
+    "korean": "ko",
+    "arabic": "ar",
+    "hindi": "hi",
+    "bengali": "bn",
+    "tamil": "ta",
+    "telugu": "te",
+    "urdu": "ur" }
+
+    get_target_language = select_language[which_lang]
+    translator = Translator()
+    translation = translator.translate(inputText, dest=get_target_language)
+    pygame.init()
+    pygame.mixer.init()
+    tts = gTTS(text=translation.text, lang=get_target_language, slow=False)
+    speech_bytes = BytesIO()
+    tts.write_to_fp(speech_bytes)
+    speech_bytes.seek(0)
+    pygame.mixer.music.load(speech_bytes)
+    pygame.mixer.music.play()
+    while pygame.mixer.music.get_busy():
+        continue
+    pygame.mixer.quit()
+    print(translation.text)
+    return translation.text
+
+secondary_cmd = input("enter the words :")
+remove_the_translate_words = secondary_cmd.replace("translate",' ')
+which_lang = input("Which Language you want change :")
+translate_voice(remove_the_translate_words,which_lang)
+
 '''
+import wikipedia
+
+def search_wikipedia(question_type, topic):
+    wikipedia.set_lang("en") 
+    try:
+        if question_type == 'what':
+            result = wikipedia.summary(topic, sentences=2)
+        elif question_type == 'who':
+            result = wikipedia.summary(topic, sentences=1)
+        elif question_type == 'how':
+            search_query = f"How {topic}"
+            result = wikipedia.summary(search_query, sentences=2)
+    except wikipedia.exceptions.DisambiguationError as e:
+        print(f"Please provide more specific information. Ambiguous term: {e}")
+
+if __name__ == "__main__":
+    question_type = input("Enter your question type (what, who, how): ").lower()
+    topic = input("Enter the topic: ")
+    search_wikipedia(question_type, topic)
 
