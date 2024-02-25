@@ -122,6 +122,3 @@ def get_to_open(get_name):
                 break
         else:
             print("Need to install the software")
-
-    print(opened_software)
-

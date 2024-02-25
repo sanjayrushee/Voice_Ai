@@ -31,7 +31,6 @@ r = sr.Recognizer()
 userName = get_user_name() 
 
 
-
 def talk(talk):
     engine.say(talk)
     engine.runAndWait()
@@ -149,11 +148,11 @@ def search_wikipedia(question_type, topic):
 def thecmdrushe():
     while True:
         main_cmd = listening_cmd()
-        main_cmd = main_cmd.lower()
-        cmd_to_start = ["wake up", "rush", "rushee",'hey rush',"hello rush","hey rushee","hello rushee"]
-        Search_keyWoards = ["wikipedia",'what is meant by','tell me about' ,'who the heck is']
+        main_input = main_cmd.lower()
+        keywords = ["wake up", "rush", "rushee", "hey rush", "hello rush", "hey rushee", "hello rushee"]
+        cmd_to_start = any(keyword in main_input for keyword in keywords)
         #cmd to get the access of Rushe
-        if   main_cmd in cmd_to_start:
+        if   cmd_to_start:
             talk("i am ready sir , please tell me what can i do for you. ")
             while True:
                 secondary_cmd = listening_cmd()
@@ -197,7 +196,7 @@ def thecmdrushe():
                     os.startfile(newpath) 
               
                 #wikipeida 
-                elif "who" in secondary_cmd or "what" in secondary_cmd or "how" in secondary_cmd:
+                elif ( "who" or "what" or "how" in secondary_cmd ) and ('search'  in secondary_cmd or'wikipedia' in secondary_cmd) :
                     set_questiontype = ''
                     if "who" in secondary_cmd:
                         set_questiontype = 'who'
@@ -205,7 +204,8 @@ def thecmdrushe():
                         set_questiontype = 'what'
                     elif "how" in secondary_cmd:
                         set_questiontype = "how"
-                    topic = secondary_cmd
+                    topic = secondary_cmd.replace(" in wikipedia", ' ') 
+                    topic = secondary_cmd.replace('search', ' ')
                     talk(search_wikipedia(set_questiontype, topic))
               
                 #translate
@@ -217,18 +217,16 @@ def thecmdrushe():
                     translate_voice(remove_the_translate_words,which_lang)
 
                 # close app
-                elif "close " in secondary_cmd.lower():
+                elif "close" in secondary_cmd.lower():
                     talk("ok, closeing ")
-                    place = secondary_cmd.replace('close','')
-                    place = place.lstrip()
+                    place = secondary_cmd.replace('close',' ').replace('browser',' ').replace(' ','')
                     print(place)
                     close_app(place)
 
                 # open apps
-                elif "open " in secondary_cmd.lower():
+                elif "open" in secondary_cmd.lower():
                     talk("opening")
-                    place = secondary_cmd.replace('open','')
-                    place = place.lstrip()
+                    place = secondary_cmd.replace('open',' ').replace('browser',' ').replace(' ','')
                     print(place)
                     get_to_open(place)
                 

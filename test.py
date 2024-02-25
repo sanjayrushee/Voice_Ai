@@ -394,4 +394,3 @@ if __name__ == "__main__":
     search_wikipedia(question_type, topic)
 
 '''
-
