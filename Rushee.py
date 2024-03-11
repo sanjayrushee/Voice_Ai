@@ -238,7 +238,7 @@ def thecmdrushe(label):
         elif "time now" in secondary_cmd.lower():
             datewithtime = datetime.datetime.now().strftime('%I %M %p')
             print(datewithtime)
-            response = "The current time is" + datewithtime
+            response = "The current time is " + datewithtime
             label.config(text=response)
             talk(response)
         
