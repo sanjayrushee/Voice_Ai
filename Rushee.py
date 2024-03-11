@@ -288,13 +288,19 @@ def voice_recognition_thread(label):
 
 def create_voice_ui():
     root = tk.Tk()
-    root.title("Voice Ai")
+    root.title("Voice AI")
     root.configure(bg="#2C3E50")  
-    #circular background
+    
+    # Add padding at the bottom of the heading
+    title_label = tk.Label(root, text="Hello, Welcome", bg="#2C3E50", fg="#ECF0F1", font=("Arial", 24))
+    title_label.pack(pady=(20, 10))  # Adding padding at the bottom
+    
+    # Circular background
     canvas = tk.Canvas(root, width=120, height=120, bg="#2C3E50", highlightthickness=0)
     canvas.place(relx=0.5, rely=0.4, anchor=tk.CENTER)
+    
     mic_image = Image.open("mic.png")  
-    mic_image = mic_image.resize((100, 100))  
+    mic_image = mic_image.resize((120, 120))  
     mic_image = ImageTk.PhotoImage(mic_image)
     
     mic_button = tk.Button(
