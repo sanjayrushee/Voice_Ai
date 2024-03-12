@@ -62,6 +62,8 @@ def listening_cmd(label):
         
 
 def translate_voice(inputText,which_lang):
+    sys.stdin.reconfigure(encoding='utf-8')
+    sys.stdout.reconfigure(encoding='utf-8')
     try:
         select_language = {
         "english": "en",
@@ -133,7 +135,6 @@ def search_wikipedia(question_type, topic):
 
 def thecmdrushe(label):
         secondary_cmd = listening_cmd(label)
-       
         secondary_cmd = secondary_cmd.lower()
         response = ""
 
@@ -266,7 +267,6 @@ def thecmdrushe(label):
             talk("ok")
             ctypes.windll.user32.LockWorkStation()
             
-            
         elif "what is current temperature in" in secondary_cmd.lower():
             city = secondary_cmd.replace("what is current temperature in", ' ').lower()
             response = f"Current Temperature in {city} {get_current_temperature(city)}"
@@ -274,10 +274,6 @@ def thecmdrushe(label):
             talk(response)
         else:
             label.config(text="Invalid ,Try Again")
-
-
-        
-
 
 
 def voice_recognition_thread(label):
@@ -288,7 +284,7 @@ def voice_recognition_thread(label):
 
 def create_voice_ui():
     root = tk.Tk()
-    root.title("Voice AI")
+    root.title("Voice Assistant")
     root.configure(bg="#2C3E50")  
     
     # Add padding at the bottom of the heading
@@ -317,7 +313,8 @@ def create_voice_ui():
     canvas.create_window(60, 60, window=mic_button)
 
     text_label = tk.Label(
-        root, text="", bg="#2C3E50", fg="#ECF0F1", font=("Arial", 16)
+        root, text="", bg="#2C3E50", fg="#ECF0F1", font=("Arial", 15),     wraplength=400  # Adjust the wrap length as needed
+
     )
 
     text_label.place(relx=0.5, rely=0.6, anchor=tk.CENTER)

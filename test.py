@@ -2,7 +2,10 @@ from googletrans import Translator
 import pygame
 from gtts import gTTS
 from io import BytesIO
+import sys 
 
+sys.stdin.reconfigure(encoding='utf-8')
+sys.stdout.reconfigure(encoding='utf-8')
 
 def translate_voice(inputText,which_lang):
    
