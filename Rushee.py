@@ -292,6 +292,8 @@ text_label = None
 def create_voice_ui():
     root = Tk()
     root.title("Voice Assistant")
+    root.configure(bg="#D06F6F")
+    
 
     bg = PhotoImage(file="background.png")
 
