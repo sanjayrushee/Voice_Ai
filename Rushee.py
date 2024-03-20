@@ -1,3 +1,4 @@
+
 import sys
 import time
 import requests
@@ -21,8 +22,6 @@ from getallapps import get_to_open
 from close_the_app import close_app
 from requirementschecking import mic_checking
 from requirementschecking import get_user_name
-from tkinter import *
-
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
@@ -278,60 +277,58 @@ def thecmdrushe(label):
             label.config(text="Invalid ,Try Again")
 
 
-label = None
+def voice_recognition_thread(label):
+    print("Voice recognition started!")
+    thecmdrushe(label)  
+    print("Voice recognition completed!")
+    
 
-def create_text(root):
-    global label  
-    max_height = 150
-    fixed_width = 480
+def create_voice_ui():
+    root = tk.Tk()
+    root.title("Voice Assistant")
+    root.configure(bg="#2C3E50")  
+    
+    # Add padding at the bottom of the heading
+    title_label = tk.Label(root, text="Hello, Welcome", bg="#2C3E50", fg="#ECF0F1", font=("Arial", 24))
+    title_label.pack(pady=(20, 10))  # Adding padding at the bottom
+    
+    # Circular background
+    canvas = tk.Canvas(root, width=120, height=120, bg="#2C3E50", highlightthickness=0)
+    canvas.place(relx=0.5, rely=0.4, anchor=tk.CENTER)
+    
+    mic_image = Image.open("button.png")  
+    mic_image = mic_image.resize((120, 120))  
+    mic_image = ImageTk.PhotoImage(mic_image)
+    
+    mic_button = tk.Button(
+        root,
+        image=mic_image,
+        command=lambda: threading.Thread(target=voice_recognition_thread, args=(text_label,)).start(),
+        bd=0,
+        bg="#2C3E50", 
+        activebackground="#2C3E50",
+        borderwidth=0,
+        relief=tk.FLAT
+    )
 
-    text_content = "Your text goes here."
+    canvas.create_window(60, 60, window=mic_button)
 
-    label = Label(root, text=text_content, wraplength=fixed_width, justify="left", background="#E7DBDB")
-    label.place(x=580, y=380)
+    text_label = tk.Label(
+        root, text="", bg="#2C3E50", fg="#ECF0F1", font=("Arial", 15),     wraplength=400  # Adjust the wrap length as needed
 
-    num_lines = len(text_content.split('\n'))
+    )
 
-    font_size = 20  
-    while font_size < 100:  
-        label.config(font=("Helvetica", font_size))
-        label.update_idletasks()  
-        label_width = label.winfo_reqwidth()
-        label_height = label.winfo_reqheight()
+    text_label.place(relx=0.5, rely=0.6, anchor=tk.CENTER)
 
-        if label_height > max_height or label_width > fixed_width:
-            font_size -= 1 
-            label.config(font=("Helvetica", font_size))
-            label.update_idletasks()  
-            label_width = label.winfo_reqwidth()
-            label_height = label.winfo_reqheight()
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    x = (screen_width - 500) // 2
+    y = (screen_height - 400) // 2
+    root.geometry('500x400+{}+{}'.format(x, y))
 
-        else:
-            break
+    root.protocol("WM_DELETE_WINDOW", root.quit)
 
-def button_clicked():
-    global label 
-    thecmdrushe(label)
+    root.mainloop()
 
-root = Tk()
-root.title("Voice Assistant")
-
-bg = PhotoImage(file="background.png")
-
-image_width = bg.width()
-image_height = bg.height()
-
-root.geometry(f"{image_width}x{image_height}")
-
-canvas = Canvas(root, width=image_width, height=image_height, highlightthickness=0)
-canvas.pack()
-
-canvas.create_image(image_width/2, image_height/2, image=bg)
-
-create_text(root)
-
-button_image = PhotoImage(file="button.png")
-button = Button(canvas, image=button_image, command=button_clicked, bd=0, highlightthickness=0, bg="#E7DBDB", activebackground="#E7DBDB")
-button.place(x=276, y=354)
-
-root.mainloop()
+if __name__ == "__main__":
+    create_voice_ui()
