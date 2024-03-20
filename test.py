@@ -1,4 +1,4 @@
-from tkinter import *
+'''from tkinter import *
 import sys
 import time
 import requests
@@ -335,3 +335,4 @@ button = Button(canvas, image=button_image, command=button_clicked, bd=0, highli
 button.place(x=276, y=354)
 
 root.mainloop()
+'''

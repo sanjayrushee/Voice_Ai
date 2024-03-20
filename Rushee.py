@@ -8,7 +8,7 @@ import pyttsx3
 import webbrowser
 import datetime
 import os 
-import tkinter as tk
+from tkinter import *
 import threading
 from PIL import Image, ImageTk
 import pyjokes
@@ -223,6 +223,10 @@ def thecmdrushe(label):
             label.config(text=response)
 
         # close app
+        elif "close chrome" in secondary_cmd.lower():
+            talk("ok,closeing chrome ")
+            os.system("taskkill /F /IM chrome.exe")
+
         elif "close" in secondary_cmd.lower():
             talk("ok, closeing ")
             place = secondary_cmd.replace('close',' ').replace('browser',' ').replace(' ','')
@@ -281,54 +285,55 @@ def voice_recognition_thread(label):
     print("Voice recognition started!")
     thecmdrushe(label)  
     print("Voice recognition completed!")
-    
+
+text_label = None
+       
 
 def create_voice_ui():
-    root = tk.Tk()
+    root = Tk()
     root.title("Voice Assistant")
-    root.configure(bg="#2C3E50")  
-    
-    # Add padding at the bottom of the heading
-    title_label = tk.Label(root, text="Hello, Welcome", bg="#2C3E50", fg="#ECF0F1", font=("Arial", 24))
-    title_label.pack(pady=(20, 10))  # Adding padding at the bottom
-    
-    # Circular background
-    canvas = tk.Canvas(root, width=120, height=120, bg="#2C3E50", highlightthickness=0)
-    canvas.place(relx=0.5, rely=0.4, anchor=tk.CENTER)
-    
-    mic_image = Image.open("button.png")  
-    mic_image = mic_image.resize((120, 120))  
-    mic_image = ImageTk.PhotoImage(mic_image)
-    
-    mic_button = tk.Button(
-        root,
-        image=mic_image,
-        command=lambda: threading.Thread(target=voice_recognition_thread, args=(text_label,)).start(),
-        bd=0,
-        bg="#2C3E50", 
-        activebackground="#2C3E50",
-        borderwidth=0,
-        relief=tk.FLAT
-    )
 
-    canvas.create_window(60, 60, window=mic_button)
+    bg = PhotoImage(file="background.png")
 
-    text_label = tk.Label(
-        root, text="", bg="#2C3E50", fg="#ECF0F1", font=("Arial", 15),     wraplength=400  # Adjust the wrap length as needed
+    image_width = bg.width()
+    image_height = bg.height()
 
-    )
+    root.geometry(f"{image_width}x{image_height}")
 
-    text_label.place(relx=0.5, rely=0.6, anchor=tk.CENTER)
+    canvas = Canvas(root, width=image_width, height=image_height, highlightthickness=0)
+    canvas.pack()
 
-    screen_width = root.winfo_screenwidth()
-    screen_height = root.winfo_screenheight()
-    x = (screen_width - 500) // 2
-    y = (screen_height - 400) // 2
-    root.geometry('500x400+{}+{}'.format(x, y))
+    canvas.create_image(image_width/2, image_height/2, image=bg)
 
-    root.protocol("WM_DELETE_WINDOW", root.quit)
+    text_content = ""  # Assuming you have text_content defined somewhere
+    text_label = Label(root, text=text_content, wraplength=480, justify="left", background="#E7DBDB")
+    text_label.place(x=580, y=380)
+
+    num_lines = len(text_content.split('\n'))
+
+    font_size = 20  
+    while font_size < 100:  
+        text_label.config(font=("Helvetica", font_size))
+        text_label.update_idletasks()  
+        text_label_width = text_label.winfo_reqwidth()
+        text_label_height = text_label.winfo_reqheight()
+
+        if text_label_height > 150 or text_label_width > 480:
+            font_size -= 1 
+            text_label.config(font=("Helvetica", font_size))
+            text_label.update_idletasks()  
+            text_label_width = text_label.winfo_reqwidth()
+            text_label_height = text_label.winfo_reqheight()
+
+        else:
+            break
+
+    button_image = PhotoImage(file="button.png")
+    button = Button(canvas, image=button_image,command = lambda: threading.Thread(target=voice_recognition_thread, args=(text_label,)).start(), bd=0, highlightthickness=0, bg="#E7DBDB", activebackground="#E7DBDB")
+    button.place(x=276, y=354)
 
     root.mainloop()
+
 
 if __name__ == "__main__":
     create_voice_ui()
